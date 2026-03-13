@@ -80,6 +80,7 @@ namespace AutoRejoin
     public class RejoinBehaviour : MonoBehaviour
     {
         public RejoinBehaviour(System.IntPtr ptr) : base(ptr) { }
+        public RejoinBehaviour() : base(Il2CppInterop.Runtime.IL2CPP.il2cpp_object_new(Il2CppInterop.Runtime.Il2CppClassPointerStore<RejoinBehaviour>.NativeClassPtr)) { }
 
         private bool   _running  = false;
         private float  _timer    = 0f;
@@ -159,6 +160,7 @@ namespace AutoRejoin
     public class CountdownGui : MonoBehaviour
     {
         public CountdownGui(System.IntPtr ptr) : base(ptr) { }
+        public CountdownGui() : base(Il2CppInterop.Runtime.IL2CPP.il2cpp_object_new(Il2CppInterop.Runtime.Il2CppClassPointerStore<CountdownGui>.NativeClassPtr)) { }
 
         private GUIStyle? _style;
         private GUIStyle? _shadow;
