@@ -12,8 +12,6 @@
   <ItemGroup>
     <!-- BepInEx 6 IL2CPP — via NuGet -->
     <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.752" />
-    <PackageReference Include="HarmonyX" Version="2.10.1" />
-    <PackageReference Include="Il2CppInterop.Runtime" Version="1.4.5" />
   </ItemGroup>
 
   <ItemGroup>
