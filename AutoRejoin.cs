@@ -11,6 +11,7 @@ namespace AutoRejoin
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     [BepInProcess("Among Us.exe")]
+    [BepInIncompatibility("auavengers.tou.mira")]
     public class AutoRejoinPlugin : BasePlugin
     {
         public static new ManualLogSource? Log;
@@ -79,26 +80,30 @@ namespace AutoRejoin
     // ─────────────────────────────────────────────────────
     public class RejoinBehaviour : MonoBehaviour
     {
+#if !NUGET_BUILD
         public RejoinBehaviour(System.IntPtr ptr) : base(ptr) { }
-        public RejoinBehaviour() : base(Il2CppInterop.Runtime.IL2CPP.il2cpp_object_new(Il2CppInterop.Runtime.Il2CppClassPointerStore<RejoinBehaviour>.NativeClassPtr)) { }
+#endif
 
-        private bool   _running  = false;
-        private float  _timer    = 0f;
-        private int    _lastShown = -1;
-        private string _gameCode = "";
+        private bool   _running    = false;
+        private bool   _isStreamer = false;
+        private float  _timer      = 0f;
+        private int    _lastShown  = -1;
+        private string _gameCode   = "";
 
         public void StartRejoin()
         {
             _gameCode  = GameCode.IntToGameName(AutoRejoinPlugin.SavedGameId);
             _timer     = AutoRejoinPlugin.RejoinDelay?.Value ?? 4;
-            _lastShown = -1;
-            _running   = true;
-            AutoRejoinPlugin.Log?.LogInfo($"[AutoRejoin] Countdown started ({_timer}s) for: {_gameCode}");
+            _lastShown  = -1;
+            _running    = true;
+            _isStreamer = DataManager.Settings.Gameplay.StreamerMode;
+            AutoRejoinPlugin.Log?.LogInfo($"[AutoRejoin] Countdown started ({_timer}s) for: {_gameCode} | Streamer: {_isStreamer}");
         }
 
         public void Cancel()
         {
-            _running = false;
+            _running    = false;
+            _isStreamer  = false;
             AutoRejoinPlugin.ScreenText = "";
         }
 
@@ -112,7 +117,9 @@ namespace AutoRejoin
             if (secs != _lastShown)
             {
                 _lastShown = secs;
-                AutoRejoinPlugin.ScreenText = $"[AutoRejoin]  Rejoining in {secs}s  ({_gameCode})";
+                AutoRejoinPlugin.ScreenText = _isStreamer
+                    ? $"[AutoRejoin]  Rejoining in {secs}s"
+                    : $"[AutoRejoin]  Rejoining in {secs}s  ({_gameCode})";
                 AutoRejoinPlugin.Log?.LogInfo(AutoRejoinPlugin.ScreenText);
             }
 
@@ -159,8 +166,9 @@ namespace AutoRejoin
     // ─────────────────────────────────────────────────────
     public class CountdownGui : MonoBehaviour
     {
+#if !NUGET_BUILD
         public CountdownGui(System.IntPtr ptr) : base(ptr) { }
-        public CountdownGui() : base(Il2CppInterop.Runtime.IL2CPP.il2cpp_object_new(Il2CppInterop.Runtime.Il2CppClassPointerStore<CountdownGui>.NativeClassPtr)) { }
+#endif
 
         private GUIStyle? _style;
         private GUIStyle? _shadow;
